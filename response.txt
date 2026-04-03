@@ -1,0 +1,3 @@
+It appears you have pasted a command line instruction intended to run a local script on your computer. I am unable to execute code or access files on your system.
+
+I can only answer questions related to the course content from the "Python in 100 Seconds" video. If you have questions regarding Python's features, how to get started with Python files, or other concepts mentioned in the subtitles, I would be happy to assist you.
