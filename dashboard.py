@@ -760,7 +760,7 @@ def render_dashboard() -> None:
     st.markdown(
         """
         <div class="hero-card">
-            <h1>Video Knowledge Dashboard</h1>
+            <h1>RAG Based Course Assistant</h1>
             <p>Upload course videos, build the transcript index, and ask grounded questions with timestamped evidence.</p>
         </div>
         """,
