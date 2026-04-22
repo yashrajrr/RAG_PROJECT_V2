@@ -6,31 +6,10 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
-from sentence_transformers import SentenceTransformer
+
+from embedding_utils import create_embeddings
 
 ROOT_DIR = Path(__file__).resolve().parent
-EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-
-_embedding_model: SentenceTransformer | None = None
-
-
-def get_embedding_model() -> SentenceTransformer:
-    global _embedding_model
-    if _embedding_model is None:
-        _embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
-    return _embedding_model
-
-
-def create_embeddings(texts: list[str]):
-    if not texts:
-        return []
-    return get_embedding_model().encode(
-        texts,
-        batch_size=64,
-        show_progress_bar=False,
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-    )
 
 
 def build_dataframe(

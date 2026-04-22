@@ -7,37 +7,21 @@ import joblib
 import numpy as np
 from dotenv import load_dotenv
 from openai import OpenAI
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+
+from embedding_utils import cosine_similarity, create_embeddings
 
 ROOT_DIR = Path(__file__).resolve().parent
 DATAFRAME_PATH = ROOT_DIR / "dataframe.joblib"
 RESPONSE_PATH = ROOT_DIR / "response.txt"
-EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 DEFAULT_OPENROUTER_MODEL = "openrouter/free"
 
 load_dotenv()
-
-_embedding_model: SentenceTransformer | None = None
-
-
-def get_embedding_model() -> SentenceTransformer:
-    global _embedding_model
-    if _embedding_model is None:
-        _embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
-    return _embedding_model
 
 
 def create_embedding(texts: list[str]) -> np.ndarray:
     if not texts:
         raise ValueError("Expected at least one text to embed.")
-    return get_embedding_model().encode(
-        texts,
-        batch_size=64,
-        show_progress_bar=False,
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-    )
+    return create_embeddings(texts)
 
 
 def format_timestamp(seconds: float | str) -> str:
@@ -58,7 +42,7 @@ def retrieve_relevant_chunks(question: str, top_k: int = 5):
 
     question_embedding = create_embedding([question])[0]
     embeddings = np.vstack(df.embedding.values)
-    similarity = cosine_similarity(embeddings, [question_embedding]).flatten()
+    similarity = cosine_similarity(embeddings, question_embedding)
 
     result_count = max(1, min(top_k, len(df)))
     max_indices = similarity.argsort()[::-1][:result_count]
